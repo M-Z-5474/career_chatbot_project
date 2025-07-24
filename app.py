@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import joblib
 import pandas as pd
 import string
@@ -16,26 +16,33 @@ def clean_text(text):
     return text
 
 # ---------- Page Configuration ----------
-st.set_page_config(page_title="Career Guidance Chatbot", page_icon="🎓", layout="centered")
+st.set_page_config(page_title="Career Guidance Chatbot", page_icon="🎓", layout="wide")
 
-# ---------- Sticky Header ----------
+# ---------- Custom CSS for Sticky Header, Scrollable Chat, Fixed Input ----------
 st.markdown("""
     <style>
+    /* Sticky header */
     .sticky-header {
         position: sticky;
         top: 0;
         background-color: white;
-        padding: 10px 0;
+        padding: 15px 0;
         z-index: 1000;
         border-bottom: 1px solid #ccc;
         text-align: center;
     }
+
+    /* Scrollable chat area */
     .chat-container {
-        max-height: 70vh;
+        height: 65vh;
         overflow-y: auto;
-        padding: 10px 20px;
-        margin-bottom: 100px;
+        padding: 15px 25px;
+        margin-bottom: 80px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
     }
+
+    /* Fixed input area */
     .fixed-bottom-input {
         position: fixed;
         bottom: 0;
@@ -43,65 +50,67 @@ st.markdown("""
         width: 100%;
         background: white;
         padding: 10px 25px;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.07);
         z-index: 999;
     }
+
     input[type="text"] {
-        width: 85% !important;
-        display: inline-block;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
     }
+
     button[kind="primary"] {
-        display: inline-block;
-        margin-left: 10px;
+        margin-top: 10px;
     }
+
+    /* Hide Streamlit default header and footer */
+    header, footer {visibility: hidden;}
     </style>
+
     <div class="sticky-header">
         <h2>🎓 Career Guidance Chatbot</h2>
-        <p>Get career suggestions based on your interests</p>
+        <p style="margin: 0; font-size: 16px; color: gray;">Get career suggestions based on your interests</p>
     </div>
 """, unsafe_allow_html=True)
 
-# ---------- Session History ----------
+# ---------- Session State ----------
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# ---------- Chat Scrollable Area ----------
+# ---------- Scrollable Chat Display ----------
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 for sender, message in st.session_state.chat_history:
     if sender == "user":
         st.markdown(f"""
-        <div style="background-color:#E7F4FF; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; margin-left:auto; text-align:right;">
-            <b>You:</b><br>{message}
-        </div>
+            <div style="background-color:#E3F2FD; padding:10px 15px; border-radius:15px; margin-bottom:10px; max-width:70%; margin-left:auto; text-align:right;">
+                <b>You:</b><br>{message}
+            </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown(f"""
-        <div style="background-color:#F5F5F5; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; text-align:left;">
-            <b>Bot:</b><br>{message}
-        </div>
+            <div style="background-color:#F1F1F1; padding:10px 15px; border-radius:15px; margin-bottom:10px; max-width:70%; text-align:left;">
+                <b>Bot:</b><br>{message}
+            </div>
         """, unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- Fixed Input Bar ----------
+# ---------- Fixed Input Box ----------
 st.markdown('<div class="fixed-bottom-input">', unsafe_allow_html=True)
-with st.form(key="chat_form", clear_on_submit=True):
-    col1, col2 = st.columns([8, 1])
-    with col1:
-        user_input = st.text_input("", placeholder="Type your interest or question here...", label_visibility="collapsed")
-    with col2:
-        submit_button = st.form_submit_button("➡️")
-st.markdown("</div>", unsafe_allow_html=True)
+with st.form("chat_form", clear_on_submit=True):
+    user_input = st.text_input("", placeholder="Type your interest or question...", label_visibility="collapsed")
+    submit_button = st.form_submit_button("Send")
+st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- Handle Input Submission ----------
+# ---------- Prediction and Chat Handling ----------
 if submit_button and user_input.strip() != "":
     clean_input = clean_text(user_input)
     input_vec = vectorizer.transform([clean_input])
     predicted_role = model.predict(input_vec)[0]
 
-    # Get random response for predicted role
     answers = df[df['role'] == predicted_role]['answer'].tolist()
     reply = random.choice(answers) if answers else "🤔 Sorry, I couldn't find advice for that."
 
-    # Append to chat history
     st.session_state.chat_history.append(("user", user_input))
     st.session_state.chat_history.append(("bot", f"🎯 **{predicted_role}**\n{reply}"))
