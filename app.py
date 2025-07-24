@@ -2,7 +2,6 @@ import streamlit as st
 import joblib
 import pandas as pd
 import string
-import re
 import random
 
 # ---------- Load Model and Data ----------
@@ -16,36 +15,30 @@ def clean_text(text):
     text = text.translate(str.maketrans('', '', string.punctuation))
     return text
 
-# ---------- Page Setup ----------
+# ---------- Page Configuration ----------
 st.set_page_config(page_title="Career Guidance Chatbot", page_icon="🎓", layout="centered")
-st.markdown("<h1 style='text-align: center;'>🎓 Career Guidance Chatbot</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Get career suggestions based on your interests</p>", unsafe_allow_html=True)
 
-# ---------- Session History ----------
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-# ---------- Display Chat Messages ----------
-for sender, message in st.session_state.chat_history:
-    if sender == "user":
-        st.markdown(f"""
-        <div style="background-color:#E7F4FF; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; margin-left:auto; text-align:right;">
-            <b>You:</b><br>{message}
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div style="background-color:#F5F5F5; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; text-align:left;">
-            <b>Bot:</b><br>{message}
-        </div>
-        """, unsafe_allow_html=True)
-
-# ---------- Fixed Input Bar (Bottom) ----------
+# ---------- Sticky Header ----------
 st.markdown("""
-<style>
+    <style>
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        padding: 10px 0;
+        z-index: 1000;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+    }
+    .chat-container {
+        max-height: 70vh;
+        overflow-y: auto;
+        padding: 10px 20px;
+        margin-bottom: 100px;
+    }
     .fixed-bottom-input {
         position: fixed;
-        bottom: 20px;
+        bottom: 0;
         left: 0;
         width: 100%;
         background: white;
@@ -61,30 +54,54 @@ st.markdown("""
         display: inline-block;
         margin-left: 10px;
     }
-</style>
-<div class="fixed-bottom-input">
+    </style>
+    <div class="sticky-header">
+        <h2>🎓 Career Guidance Chatbot</h2>
+        <p>Get career suggestions based on your interests</p>
+    </div>
 """, unsafe_allow_html=True)
 
-# Input field and arrow button
+# ---------- Session History ----------
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# ---------- Chat Scrollable Area ----------
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+for sender, message in st.session_state.chat_history:
+    if sender == "user":
+        st.markdown(f"""
+        <div style="background-color:#E7F4FF; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; margin-left:auto; text-align:right;">
+            <b>You:</b><br>{message}
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div style="background-color:#F5F5F5; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; text-align:left;">
+            <b>Bot:</b><br>{message}
+        </div>
+        """, unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ---------- Fixed Input Bar ----------
+st.markdown('<div class="fixed-bottom-input">', unsafe_allow_html=True)
 with st.form(key="chat_form", clear_on_submit=True):
     col1, col2 = st.columns([8, 1])
     with col1:
         user_input = st.text_input("", placeholder="Type your interest or question here...", label_visibility="collapsed")
     with col2:
         submit_button = st.form_submit_button("➡️")
-
 st.markdown("</div>", unsafe_allow_html=True)
 
-# ---------- On Submit ----------
+# ---------- Handle Input Submission ----------
 if submit_button and user_input.strip() != "":
     clean_input = clean_text(user_input)
     input_vec = vectorizer.transform([clean_input])
     predicted_role = model.predict(input_vec)[0]
-    
-    # Choose a random response for the predicted role
+
+    # Get random response for predicted role
     answers = df[df['role'] == predicted_role]['answer'].tolist()
     reply = random.choice(answers) if answers else "🤔 Sorry, I couldn't find advice for that."
 
-    # Add to chat history
+    # Append to chat history
     st.session_state.chat_history.append(("user", user_input))
     st.session_state.chat_history.append(("bot", f"🎯 **{predicted_role}**\n{reply}"))
