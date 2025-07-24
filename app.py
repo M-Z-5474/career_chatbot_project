@@ -6,7 +6,7 @@ import re
 import random
 
 # Load Model and Vectorizer
-model = joblib.load('intent_model.pkl')
+model = joblib.load('best_model.pkl')
 vectorizer = joblib.load('vectorizer.pkl')
 
 # Load original dataset (used for example answers)
