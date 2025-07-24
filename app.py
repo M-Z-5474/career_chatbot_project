@@ -5,70 +5,86 @@ import string
 import re
 import random
 
-# ------------------ Setup ------------------
-
-# Load model/vectorizer
+# ---------- Load Model and Data ----------
 model = joblib.load('best_model.pkl')
 vectorizer = joblib.load('vectorizer.pkl')
 df = pd.read_csv('career_guidance_dataset.csv')
 
-# Clean text
+# ---------- Text Cleaning ----------
 def clean_text(text):
     text = text.lower()
     text = text.translate(str.maketrans('', '', string.punctuation))
     return text
 
-# ------------------ UI Config ------------------
+# ---------- Page Setup ----------
+st.set_page_config(page_title="Career Guidance Chatbot", page_icon="🎓", layout="centered")
+st.markdown("<h1 style='text-align: center;'>🎓 Career Guidance Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Get career suggestions based on your interests</p>", unsafe_allow_html=True)
 
-st.set_page_config(page_title="Career Chatbot", page_icon="🎓", layout="centered")
-st.title("🎓 Career Guidance Chatbot")
-st.markdown("Type your interests or a question to receive a career suggestion.")
-
-# ------------------ Session State for Chat ------------------
-
+# ---------- Session History ----------
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# ------------------ Input Form ------------------
-
-with st.form(key="chat_form", clear_on_submit=True):
-    user_input = st.text_input("💬 Your Message", placeholder="e.g., I love solving math problems...", label_visibility="collapsed")
-    submit_button = st.form_submit_button("➡️")
-
-# ------------------ On Submit ------------------
-
-if submit_button and user_input.strip() != "":
-    # Clean and predict
-    clean_input = clean_text(user_input)
-    input_vec = vectorizer.transform([clean_input])
-    predicted_role = model.predict(input_vec)[0]
-
-    # Get response
-    answers = df[df['role'] == predicted_role]['answer'].tolist()
-    reply = random.choice(answers) if answers else "Sorry, I couldn't find advice for that career."
-
-    # Append messages
-    st.session_state.chat_history.append(("user", user_input))
-    st.session_state.chat_history.append(("bot", f"🎯 **{predicted_role}**\n💡 {reply}"))
-
-# ------------------ Display Chat ------------------
-
+# ---------- Display Chat Messages ----------
 for sender, message in st.session_state.chat_history:
     if sender == "user":
         st.markdown(f"""
-        <div style="background-color:#DCF8C6; padding:10px 15px; border-radius:12px; margin-bottom:8px; width:fit-content; max-width:80%; align-self:flex-end; margin-left:auto;">
+        <div style="background-color:#E7F4FF; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; margin-left:auto; text-align:right;">
             <b>You:</b><br>{message}
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown(f"""
-        <div style="background-color:#F1F0F0; padding:10px 15px; border-radius:12px; margin-bottom:8px; width:fit-content; max-width:80%;">
+        <div style="background-color:#F5F5F5; padding:10px 15px; border-radius:18px; margin-bottom:10px; max-width:70%; text-align:left;">
             <b>Bot:</b><br>{message}
         </div>
         """, unsafe_allow_html=True)
 
-# ------------------ Optional: Clear Chat Button ------------------
+# ---------- Fixed Input Bar (Bottom) ----------
+st.markdown("""
+<style>
+    .fixed-bottom-input {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 10px 25px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
+    input[type="text"] {
+        width: 85% !important;
+        display: inline-block;
+    }
+    button[kind="primary"] {
+        display: inline-block;
+        margin-left: 10px;
+    }
+</style>
+<div class="fixed-bottom-input">
+""", unsafe_allow_html=True)
 
-st.markdown("---")
-if st.button("🗑️ Clear Chat"):
-    st.session_state.chat_history = []
+# Input field and arrow button
+with st.form(key="chat_form", clear_on_submit=True):
+    col1, col2 = st.columns([8, 1])
+    with col1:
+        user_input = st.text_input("", placeholder="Type your interest or question here...", label_visibility="collapsed")
+    with col2:
+        submit_button = st.form_submit_button("➡️")
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ---------- On Submit ----------
+if submit_button and user_input.strip() != "":
+    clean_input = clean_text(user_input)
+    input_vec = vectorizer.transform([clean_input])
+    predicted_role = model.predict(input_vec)[0]
+    
+    # Choose a random response for the predicted role
+    answers = df[df['role'] == predicted_role]['answer'].tolist()
+    reply = random.choice(answers) if answers else "🤔 Sorry, I couldn't find advice for that."
+
+    # Add to chat history
+    st.session_state.chat_history.append(("user", user_input))
+    st.session_state.chat_history.append(("bot", f"🎯 **{predicted_role}**\n{reply}"))
