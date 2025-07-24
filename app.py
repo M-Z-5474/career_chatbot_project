@@ -10,7 +10,7 @@ model = joblib.load('best_model.pkl')
 vectorizer = joblib.load('vectorizer.pkl')
 
 # Load original dataset (used for example answers)
-df = pd.read_csv('career_dataset.csv')
+df = pd.read_csv('career_guidance_dataset.csv')
 
 # Clean user input
 def clean_text(text):
