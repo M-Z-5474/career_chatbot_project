@@ -99,20 +99,7 @@ Content includes:
 
 ---
 
-## 🧑‍💻 Author
 
-Developed with ❤️ by **Muhammad Zain Mushtaq**
-🔗 GitHub: [M-Z-5474](https://github.com/M-Z-5474)
-📧 [zain@example.com](mailto:zain@example.com) *(optional)*
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-You are free to use, modify, and share with credit.
-
----
 
 ## 🙋‍♂️ Sample Questions to Try
 
@@ -123,16 +110,14 @@ What tools are used by a Web Developer?
 I enjoy creative writing and storytelling.
 Which career suits analytical thinkers?
 ```
+## 🧑‍💻 ♂️ Author
+
+📬 Muhammad Zain Mushtaq developed this project 
+🔗 GitHub: https://github.com/M-Z-5474
+📧 Email: m.zainmushtaq74@gmail.com
+🔗 LinkedIn: https://www.linkedin.com/in/muhammad-zain-m-a75163358/
+________________________________________
+🌟 If you like this project, please consider giving it a ⭐ on GitHub!
 
 ---
 
-## 💡 Pro Tip
-
-Use this chatbot to explore roles you're curious about, prep for interviews, or discover new career paths. The model gets smarter with better data!
-
-```
-
----
-
-Let me know if you’d like a `LICENSE` file, model training script (`train.py`), or deployment instructions (e.g., Streamlit Cloud or Docker).
-```
