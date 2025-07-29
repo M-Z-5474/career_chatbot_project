@@ -1,5 +1,3 @@
-
-```markdown
 # 🎓 AI-Powered Career Chatbot
 
 An intelligent Streamlit-based chatbot that provides career guidance based on your questions. It uses a trained machine learning model to classify your intent and return the most relevant career advice from a curated dataset.
