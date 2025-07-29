@@ -28,15 +28,17 @@ An intelligent Streamlit-based chatbot that provides career guidance based on yo
 
 ```
 
-career\_chatbot\_project/
-│
-├── app.py                       # Streamlit app code
-├── career\_guidance\_dataset.csv # Dataset of Q\&A
-├── intent\_model.pkl            # Trained ML model
-├── vectorizer.pkl              # TF-IDF vectorizer
-├── requirements.txt            # Required Python packages
-├── UI_preview                  # App's Preview 
-└── README.md                   # Project documentation
+career_chatbot_project/
+├── app.py                  # Main Streamlit app
+├── vectorizer.pkl          # Saved TfidfVectorizer
+├── intent_model.pkl        # Trained classification model
+├── career_guidance_dataset.csv
+├── UI_preview/             # Screenshots of the UI
+│   ├── main.png
+│   ├── input.png
+│   └── history.png
+├── requirements.txt
+└── README.md
 
 ````
 
