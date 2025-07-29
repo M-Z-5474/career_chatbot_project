@@ -113,8 +113,11 @@ Which career suits analytical thinkers?
 ## 🧑‍💻 ♂️ Author
 
 📬 Muhammad Zain Mushtaq developed this project 
+
 🔗 GitHub: https://github.com/M-Z-5474
+
 📧 Email: m.zainmushtaq74@gmail.com
+
 🔗 LinkedIn: https://www.linkedin.com/in/muhammad-zain-m-a75163358/
 ________________________________________
 🌟 If you like this project, please consider giving it a ⭐ on GitHub!
