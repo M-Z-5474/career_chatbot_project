@@ -10,7 +10,7 @@ from datetime import datetime
 st.set_page_config(page_title="Career Chatbot", layout="wide", page_icon="🎓")
 
 # -------------------- LOAD MODEL & VECTORIZER --------------------
-model = joblib.load("best_model.pkl")
+model = joblib.load("intent_model.pkl")
 vectorizer = joblib.load("vectorizer.pkl")
 
 # -------------------- LOAD DATA --------------------
