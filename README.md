@@ -35,6 +35,7 @@ career\_chatbot\_project/
 ├── intent\_model.pkl            # Trained ML model
 ├── vectorizer.pkl              # TF-IDF vectorizer
 ├── requirements.txt            # Required Python packages
+├── UI_preview                  # App's Preview 
 └── README.md                   # Project documentation
 
 ````
@@ -93,9 +94,18 @@ Content includes:
 
 ---
 
+
 ## 🖼️ UI Preview
 
-![Screenshot](https://cdn-icons-png.flaticon.com/512/3135/3135789.png)
+### 🏠 Main Interface
+![Main Interface](UI_preview/main.png)
+
+### 📝 User Input Example
+![Input Example](UI_preview/input.png)
+
+### 📜 Chat History Example
+![Chat History](UI_preview/history.png)
+
 
 ---
 
