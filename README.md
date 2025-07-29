@@ -15,14 +15,6 @@ An intelligent Streamlit-based chatbot that provides career guidance based on yo
 
 ---
 
-## 🧠 How It Works
-
-1. Your input question is vectorized using a **TF-IDF** vectorizer.
-2. A **Logistic Regression** model predicts your career intent (role).
-3. The chatbot finds the most relevant Q&A for that role using **cosine similarity**.
-4. A matching answer is returned with helpful context.
-
----
 
 ## 📁 Project Structure
 
